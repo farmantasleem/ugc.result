@@ -25,6 +25,11 @@ export const env = {
   pexels: {
     apiKey: required('PEXELS_API_KEY'),
   },
+  // Background removal (onnxruntime) is heavy and can crash natively on some
+  // hosts. Set UGC_DISABLE_CUTOUT=true to skip it and composite raw GIF frames.
+  cutout: {
+    enabled: process.env.UGC_DISABLE_CUTOUT !== 'true',
+  },
   // Optional: if all three are set, rendered videos are uploaded to ImageKit and
   // the response returns that URL; otherwise videos are served locally.
   imagekit: {

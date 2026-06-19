@@ -7,6 +7,7 @@ import { runFfmpeg, probe } from '../lib/ffmpeg.js'
 import { renderCaption } from './textLayer.service.js'
 import { cutoutFrames } from './cutout.service.js'
 import { badGateway } from '../lib/httpError.js'
+import { env } from '../config/env.js'
 
 const W = 1080
 const H = 1920
@@ -33,7 +34,7 @@ export async function assembleVideo({
   caption,
   outDir,
   durationSec = 5,
-  removeGifBg = true,
+  removeGifBg = env.cutout.enabled,
   audioPath,
   audioStartSec = 0,
 }) {

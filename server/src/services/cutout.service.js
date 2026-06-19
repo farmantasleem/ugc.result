@@ -1,31 +1,38 @@
-import { readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { removeBackground } from '@imgly/background-removal-node'
+import { writeFile, rm } from 'node:fs/promises'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { randomUUID } from 'node:crypto'
+
+const exec = promisify(execFile)
+const workerPath = join(dirname(fileURLToPath(import.meta.url)), 'cutout.worker.js')
 
 /**
  * Removes the background from each frame, leaving the person on transparency.
  * Returns RGBA PNGs written to `outDir`, renumbered contiguously so ffmpeg can
  * read them as an image sequence.
  *
- * Per-frame model inference is the slow part, so the caller caps how many frames
- * it sends. Throws if the model/runtime is unavailable  the caller falls back
- * to compositing the raw frames.
+ * The actual matting runs in a child process (see cutout.worker.js): onnxruntime
+ * can abort the process natively ("munmap_chunk(): invalid pointer"), which an
+ * in-process try/catch cannot catch  it would take the whole API server down.
+ * Running it isolated turns such a crash into a non-zero exit the caller can
+ * catch and fall back from (compositing the raw frames instead).
  *
  * @param {string[]} framePaths  input frame PNG paths, in order
  * @param {string} outDir        where to write cut-out frames
  * @returns {Promise<string[]>}  output frame paths
  */
 export async function cutoutFrames(framePaths, outDir) {
-  const out = []
-  for (let i = 0; i < framePaths.length; i++) {
-    const input = await readFile(framePaths[i])
-    // Wrap in a typed Blob  imgly can't sniff the format from a bare Buffer.
-    const source = new Blob([input], { type: 'image/png' })
-    const blob = await removeBackground(source, { output: { format: 'image/png' } })
-    const png = Buffer.from(await blob.arrayBuffer())
-    const dest = join(outDir, `f_${String(i + 1).padStart(4, '0')}.png`)
-    await writeFile(dest, png)
-    out.push(dest)
+  const jobPath = join(tmpdir(), `ugc-cutout-${randomUUID().slice(0, 8)}.json`)
+  await writeFile(jobPath, JSON.stringify({ framePaths, outDir }))
+  try {
+    const { stdout } = await exec(process.execPath, [workerPath, jobPath], {
+      maxBuffer: 1024 * 1024 * 16,
+    })
+    return JSON.parse(stdout)
+  } finally {
+    await rm(jobPath, { force: true })
   }
-  return out
 }
