@@ -1,0 +1,20 @@
+/*
+ * Design tokens (single palette)  modeled on linusprep.com:
+ * off-white canvas, white cards, deep forest-green brand, lime highlight.
+ * Components never reference raw colors  they use the semantic Tailwind
+ * names (bg, surface, accent, highlight, ...) which map to these variables,
+ * so the whole look can be retuned from this one file.
+ */
+
+:root {
+  --color-bg: 246 246 243; /* off-white canvas */
+  --color-surface: 255 255 255; /* cards */
+  --color-surface-raised: 240 241 237;
+  --color-border: 228 229 224;
+  --color-content: 23 34 28; /* near-black green */
+  --color-muted: 106 114 106;
+  --color-accent: 15 61 44; /* deep forest green (brand) */
+  --color-accent-soft: 226 238 230; /* light green tint */
+  --color-accent-contrast: 255 255 255;
+  --color-highlight: 194 238 58; /* lime */
+}

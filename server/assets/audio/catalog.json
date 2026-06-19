@@ -1,0 +1,82 @@
+{
+  "$comment": "Catalog of the static/trending audio tracks in this folder. The AI reads `description`, `mood`, and `tags` to pick the track that best fits the video's vibe. `file` is the exact file name in assets/audio/. Each clip is cut to the video length (~5s) at render time, starting from `startSec`.",
+  "tracks": [
+    {
+      "id": "astronomia-shuffle",
+      "file": "ASTRONOMIATUZELITY x ABVIRAL NEON SHUFFLE DANCE #shorts #viral.mp3",
+      "title": "Astronomia (Tuzelity shuffle / Coffin Dance)  neon shuffle edit",
+      "description": "High-energy EDM 'Astronomia' beat, the viral Tuzelity/Coffin-Dance shuffle anthem. Hard hype build and drop used for flex montages and over-the-top reaction edits.",
+      "mood": "hype",
+      "energy": "high",
+      "tags": ["hype", "energetic", "dance", "edm", "funny", "flex", "viral", "exciting"],
+      "goodFor": "loud confident product hype, 'wait till you see this' reveals, energetic excited reactions",
+      "startSec": 0
+    },
+    {
+      "id": "dancing-makes-everything-better",
+      "file": "Dancing makes everything better.mp3",
+      "title": "Dancing Makes Everything Better",
+      "description": "Upbeat, bouncy feel-good dance track. Light, playful and happy  the 'everything just got easier' celebration vibe.",
+      "mood": "happy",
+      "energy": "medium-high",
+      "tags": ["happy", "upbeat", "playful", "fun", "feelgood", "celebration", "cheerful"],
+      "goodFor": "wholesome wins, 'problem solved' relief, cheerful relatable everyday moments",
+      "startSec": 0
+    },
+    {
+      "id": "interstellar-tiktok-cover",
+      "file": "Interstellar theme - tiktok version cover by dorian marko.mp3",
+      "title": "Interstellar Theme (TikTok cover)  Hans Zimmer",
+      "description": "Epic, swelling cinematic piano-and-organ theme from Interstellar. Builds from quiet awe to a goosebumps climax. Used for dramatic, inspiring, 'this changes everything' moments.",
+      "mood": "epic",
+      "energy": "building",
+      "tags": ["epic", "cinematic", "inspiring", "dramatic", "emotional", "awe", "grand", "motivational"],
+      "goodFor": "big product reveals, ambitious/visionary framing, awe-struck or motivational reactions",
+      "startSec": 0
+    },
+    {
+      "id": "just-cant-prove-it",
+      "file": "Just can't prove it....mp3",
+      "title": "Just Can't Prove It (suspicious meme audio)",
+      "description": "The 'I know what you did... I just can't prove it' suspicious meme sound. Paranoid, side-eye, comedic distrust energy.",
+      "mood": "suspicious",
+      "energy": "low-medium",
+      "tags": ["suspicious", "sus", "funny", "deadpan", "skeptical", "side-eye", "paranoid", "meme"],
+      "goodFor": "skeptical 'is this too good to be true' takes, deadpan suspicious reactions, comedic distrust",
+      "startSec": 0
+    },
+    {
+      "id": "let-me-know-tamar-braxton",
+      "file": "Tamar Braxton - Let Me Know (Official Video) ft. Future.mp3",
+      "title": "Tamar Braxton  Let Me Know ft. Future",
+      "description": "Smooth, laid-back R&B groove. Cool, confident and vibey  the effortless, 'I got this' flex without the noise.",
+      "mood": "smooth",
+      "energy": "medium",
+      "tags": ["chill", "smooth", "confident", "cool", "vibey", "rnb", "laidback", "stylish"],
+      "goodFor": "effortless confident flexes, sleek/premium products, chill relatable cool reactions",
+      "startSec": 0
+    },
+    {
+      "id": "tyler-gone-gone-thank-you",
+      "file": "The ONLY 1010 movies  Tyler, The Creator - GONE, GONE  THANK YOU #edit.mp3",
+      "title": "Tyler, The Creator  GONE, GONE / THANK YOU (edit)",
+      "description": "Moody, stylish Tyler, The Creator edit audio  bittersweet yet cool. The aesthetic-edit sound for emotional-but-confident, glow-up flex montages.",
+      "mood": "aesthetic",
+      "energy": "medium",
+      "tags": ["aesthetic", "cool", "moody", "emotional", "stylish", "glow-up", "bittersweet", "edit"],
+      "goodFor": "aesthetic glow-up edits, bittersweet-but-cool transformations, stylish emotional flexes",
+      "startSec": 0
+    },
+    {
+      "id": "dramamine-slowed-reverb",
+      "file": "dramamine slowed reverb. #dramamine #peace #nature #.mp3",
+      "title": "Dramamine  slowed + reverb (Modest Mouse)",
+      "description": "Dreamy, slowed-and-reverb ambient guitar. Calm, peaceful, nostalgic and a little melancholic  the 'quiet, slow, at-peace' vibe.",
+      "mood": "calm",
+      "energy": "low",
+      "tags": ["calm", "peaceful", "dreamy", "nostalgic", "chill", "relaxing", "nature", "melancholic"],
+      "goodFor": "calm relaxed reactions, peaceful wholesome moments, nostalgic or reflective vibes",
+      "startSec": 0
+    }
+  ]
+}

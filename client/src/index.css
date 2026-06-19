@@ -1,0 +1,44 @@
+@import './theme/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg text-content font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Reusable, theme-driven primitives */
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-accent
+      px-4 py-2 text-sm font-medium text-accent-contrast transition
+      hover:opacity-90 active:scale-[0.98]
+      disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .card {
+    @apply rounded-2xl border border-border bg-surface;
+  }
+}
+
+/* Slim, theme-aware scrollbar */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-border));
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

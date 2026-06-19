@@ -1,0 +1,28 @@
+# Standalone stack for the UGC backend — no reverse proxy, no TLS.
+# Runs `npm start` in the container and publishes the port directly on the host.
+#
+# DEPLOY (on the droplet):
+#   1. Create server/.env (see .env.example) with the API keys + IMAGEKIT_* vars.
+#   2. docker compose up -d --build
+#   3. docker compose logs -f
+#
+# Reach it at:  http://<droplet-ip>:3001
+# (open the port in your DigitalOcean firewall / ufw if one is enabled)
+#
+# NOTE: needs ~2GB+ RAM free — the background-removal step OOM-kills otherwise.
+
+services:
+  ugc:
+    build:
+      context: .
+    image: ugc-backend:latest
+    container_name: ugc-backend
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+    ports:
+      - "3001:3001"
