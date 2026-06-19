@@ -3,7 +3,7 @@ import { SparkIcon } from './icons.jsx'
 const SUGGESTIONS = [
   "I'm building CalAI, a calorie-tracking app. Here's the site: calai.app",
   'Make a UGC video for Notion  notion.so',
-  'Promote my coffee brand BrewBox at brewbox.coffee',
+  'Make a UGC video for  result.dev',
 ]
 
 /** Shown before the first message: pitch + clickable example prompts. */
