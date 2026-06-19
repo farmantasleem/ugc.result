@@ -1,11 +1,15 @@
-# Standalone stack for the UGC backend. Runs on its own and publishes port 3001
-# on the host — no proxy, no domain, no TLS. Reach it directly at:
-#   http://<droplet-ip>:3001/health
+# UGC backend. It joins the Kamyab.io stack's existing Docker network so that
+# stack's Nginx can reverse-proxy to it by container name (ugc-backend:3001) and
+# serve it over HTTPS. No second proxy, no host port exposed to the internet.
+#
+# The external network name is "<project>_<network>" = kamyabio_app-net.
+# VERIFY on the droplet:  docker network ls | grep app-net
+# If it differs, change the `name:` field below to match.
 #
 # DEPLOY (from this dir, ~/ugc.result/server):
 #   1. Create .env (see .env.example) with the API keys + IMAGEKIT_* vars.
 #   2. docker compose up -d --build
-#   3. docker compose logs -f
+#   3. Then add the Nginx block + issue the cert on the Kamyab side (chat steps).
 #
 # NOTE: needs ~2GB+ RAM for the render step. On a 1GB droplet add swap first.
 
@@ -22,5 +26,12 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"          # internal only; Nginx reaches it over the shared network
+    networks:
+      - kamyab
+
+networks:
+  kamyab:
+    external: true
+    name: kamyabio_app-net
