@@ -4,8 +4,14 @@ FROM node:20-bookworm-slim
 
 # sharp's prebuilt binary needs libstdc++/libc (present on bookworm-slim already),
 # but ca-certificates is needed for the ONNX model + API HTTPS calls at runtime.
+# fontconfig + fonts-liberation give sharp/librsvg a real font to render captions
+# with (the SVG asks for "Liberation Sans", an Arial metric-compatible family);
+# without these the caption layer renders empty and logs a Fontconfig error.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates \
+  && apt-get install -y --no-install-recommends \
+       ca-certificates \
+       fontconfig \
+       fonts-liberation \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -23,7 +23,7 @@ export async function renderCaption(caption, { width = 1080, height = 1920, font
 
   const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
     <text x="${width / 2}" y="${startY}" text-anchor="middle"
-          font-family="'Arial','Helvetica Neue',sans-serif" font-size="${fontSize}"
+          font-family="'Liberation Sans','Arial','Helvetica Neue',sans-serif" font-size="${fontSize}"
           font-weight="700" fill="#ffffff"
           stroke="#000000" stroke-width="6" stroke-linejoin="round" paint-order="stroke">
       ${tspans}
