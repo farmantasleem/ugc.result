@@ -1,7 +1,11 @@
-# Append this block to the droplet stack's Caddyfile (the one mounted into the
-# caddy service), then `docker compose restart caddy`.
+# The UGC backend runs as its own standalone stack (not on the main `web`
+# network), publishing port 3001 on the host. So point Caddy at the host IP
+# rather than a container name.
+#
+# Append this block to your MAIN stack's Caddyfile (the one mounted into the
+# caddy service), then from the MAIN stack dir: `docker compose restart caddy`.
 # Caddy auto-provisions the Let's Encrypt cert on first request.
 
 ugc.murga.app {
-	reverse_proxy ugc:3001
+	reverse_proxy 139.59.5.247:3001
 }

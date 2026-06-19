@@ -1,36 +1,30 @@
-# This is NOT a standalone stack. The droplet already runs a Caddy container
-# that owns ports 80/443, so the UGC backend joins that existing stack and is
-# served over HTTPS at ugc.murga.app (no mixed-content issues for the client).
+# Standalone stack for the UGC backend. Runs on its own and publishes port 3001
+# on the host, so it works regardless of your other stack. The domain
+# (ugc.murga.app) is wired up separately by pointing your main stack's Caddy at
+# this published port — see ./Caddyfile.fragment.
 #
-# DEPLOY:
-#   1. Clone this repo on the droplet next to the main app, e.g. as a sibling so
-#      the build context below resolves: ../ugc.result/server
-#   2. Copy the `ugc` service block below into the main docker-compose.yml
-#      (the one with `server`, `messaging`, `caddy` on the `web` network).
-#   3. Append the entry from ./Caddyfile.fragment to that stack's Caddyfile.
-#   4. Create ../ugc.result/server/.env (see .env.example) with the API keys
-#      and IMAGEKIT_* vars so rendered videos upload to the cloud (no volume).
-#   5. Add DNS: A record `ugc` -> droplet IP.
-#   6. From the main compose dir:
-#        docker compose up -d --build ugc
-#        docker compose restart caddy      # reload Caddyfile for the new host
-#        docker compose logs -f ugc
+# DEPLOY (from this dir, ~/ugc.result/server):
+#   1. Create .env (see .env.example) with the API keys + IMAGEKIT_* vars.
+#   2. docker compose up -d --build
+#   3. docker compose logs -f
 #
-# NOTE: needs ~2GB+ RAM free — the background-removal step OOM-kills otherwise.
+# Reach it directly at:  http://<droplet-ip>:3001/health
+#
+# NOTE: this image needs ~2GB+ RAM for the background-removal step. On a 1GB
+# droplet that step will be OOM-killed — add swap or size up (see chat notes).
 
 services:
   ugc:
     build:
-      context: ../ugc.result/server     # adjust to the repo's location on the droplet
+      context: .
     image: ugc-backend:latest
+    container_name: ugc-backend
     restart: unless-stopped
     init: true
     env_file:
-      - ../ugc.result/server/.env
+      - .env
     environment:
       NODE_ENV: production
       PORT: 3001
-    expose:
-      - "3001"
-    networks:
-      - web
+    ports:
+      - "3001:3001"
