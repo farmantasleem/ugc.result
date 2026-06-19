@@ -1,0 +1,6 @@
+# Full Caddyfile for this self-contained stack. Mounted into the caddy service.
+# Caddy auto-provisions the Let's Encrypt cert for this domain on first request.
+
+ugc.murga.app {
+	reverse_proxy ugc:3001
+}

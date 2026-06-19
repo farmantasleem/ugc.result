@@ -1,17 +1,19 @@
-# Standalone stack for the UGC backend. Runs on its own and publishes port 3001
-# on the host, so it works regardless of your other stack. The domain
-# (ugc.murga.app) is wired up separately by pointing your main stack's Caddy at
-# this published port — see ./Caddyfile.fragment.
+# Self-contained stack for the UGC backend, run entirely from ~/ugc.result/server.
+# It brings its OWN Caddy that serves ugc.murga.app over HTTPS and proxies to the
+# backend container. Nothing in the other project is touched.
 #
-# DEPLOY (from this dir, ~/ugc.result/server):
+# REQUIREMENT: ports 80/443 must be free on the droplet (only one process can
+# own them). Check with: sudo lsof -i :80 -i :443
+#
+# DEPLOY (from this dir):
 #   1. Create .env (see .env.example) with the API keys + IMAGEKIT_* vars.
-#   2. docker compose up -d --build
-#   3. docker compose logs -f
+#   2. Add DNS: A record  ugc.murga.app -> droplet IP.
+#   3. docker compose up -d --build
+#   4. docker compose logs -f
 #
-# Reach it directly at:  http://<droplet-ip>:3001/health
+#   Then:  https://ugc.murga.app/health
 #
-# NOTE: this image needs ~2GB+ RAM for the background-removal step. On a 1GB
-# droplet that step will be OOM-killed — add swap or size up (see chat notes).
+# NOTE: needs ~2GB+ RAM for the render step. On a 1GB droplet add swap first.
 
 services:
   ugc:
@@ -26,5 +28,32 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
+    expose:
+      - "3001"          # internal only; Caddy reaches it by service name
+    networks:
+      - ugc-net
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: ugc-caddy
+    restart: unless-stopped
+    depends_on:
+      - ugc
     ports:
-      - "3001:3001"
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # persists issued certs — do NOT delete
+      - caddy_config:/config
+    networks:
+      - ugc-net
+
+networks:
+  ugc-net:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
