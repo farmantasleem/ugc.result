@@ -1,28 +1,36 @@
-# Standalone stack for the UGC backend — no reverse proxy, no TLS.
-# Runs `npm start` in the container and publishes the port directly on the host.
+# This is NOT a standalone stack. The droplet already runs a Caddy container
+# that owns ports 80/443, so the UGC backend joins that existing stack and is
+# served over HTTPS at ugc.murga.app (no mixed-content issues for the client).
 #
-# DEPLOY (on the droplet):
-#   1. Create server/.env (see .env.example) with the API keys + IMAGEKIT_* vars.
-#   2. docker compose up -d --build
-#   3. docker compose logs -f
-#
-# Reach it at:  http://<droplet-ip>:3001
-# (open the port in your DigitalOcean firewall / ufw if one is enabled)
+# DEPLOY:
+#   1. Clone this repo on the droplet next to the main app, e.g. as a sibling so
+#      the build context below resolves: ../ugc.result/server
+#   2. Copy the `ugc` service block below into the main docker-compose.yml
+#      (the one with `server`, `messaging`, `caddy` on the `web` network).
+#   3. Append the entry from ./Caddyfile.fragment to that stack's Caddyfile.
+#   4. Create ../ugc.result/server/.env (see .env.example) with the API keys
+#      and IMAGEKIT_* vars so rendered videos upload to the cloud (no volume).
+#   5. Add DNS: A record `ugc` -> droplet IP.
+#   6. From the main compose dir:
+#        docker compose up -d --build ugc
+#        docker compose restart caddy      # reload Caddyfile for the new host
+#        docker compose logs -f ugc
 #
 # NOTE: needs ~2GB+ RAM free — the background-removal step OOM-kills otherwise.
 
 services:
   ugc:
     build:
-      context: .
+      context: ../ugc.result/server     # adjust to the repo's location on the droplet
     image: ugc-backend:latest
-    container_name: ugc-backend
     restart: unless-stopped
     init: true
     env_file:
-      - .env
+      - ../ugc.result/server/.env
     environment:
       NODE_ENV: production
       PORT: 3001
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
+    networks:
+      - web

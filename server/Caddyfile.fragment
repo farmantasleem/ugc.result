@@ -1,0 +1,7 @@
+# Append this block to the droplet stack's Caddyfile (the one mounted into the
+# caddy service), then `docker compose restart caddy`.
+# Caddy auto-provisions the Let's Encrypt cert on first request.
+
+ugc.murga.app {
+	reverse_proxy ugc:3001
+}
