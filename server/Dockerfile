@@ -7,11 +7,14 @@ FROM node:20-bookworm-slim
 # fontconfig + fonts-liberation give sharp/librsvg a real font to render captions
 # with (the SVG asks for "Liberation Sans", an Arial metric-compatible family);
 # without these the caption layer renders empty and logs a Fontconfig error.
+# libgomp1 is the OpenMP runtime onnxruntime-node links against; it's absent from
+# the slim base and its absence is a common cause of native aborts at inference.
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
        ca-certificates \
        fontconfig \
        fonts-liberation \
+       libgomp1 \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

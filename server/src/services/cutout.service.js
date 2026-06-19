@@ -30,8 +30,21 @@ export async function cutoutFrames(framePaths, outDir) {
   try {
     const { stdout } = await exec(process.execPath, [workerPath, jobPath], {
       maxBuffer: 1024 * 1024 * 16,
+      env: {
+        ...process.env,
+        // onnxruntime otherwise spawns a thread per host core, which on small /
+        // older CPUs oversubscribes and can abort ("munmap_chunk"). One vCPU =
+        // one thread is both correct here and far more stable.
+        OMP_NUM_THREADS: '1',
+        ORT_NUM_THREADS: '1',
+      },
     })
     return JSON.parse(stdout)
+  } catch (err) {
+    // execFile rejects on non-zero exit / native abort; attach the worker's
+    // stderr so the caller logs the real reason instead of a generic failure.
+    const detail = err?.stderr ? String(err.stderr).trim().split('\n').slice(-3).join(' | ') : err?.message
+    throw new Error(`cutout worker failed: ${detail}`)
   } finally {
     await rm(jobPath, { force: true })
   }

@@ -73,8 +73,9 @@ export async function assembleVideo({
         frames = await cutoutFrames(sampled, cutDir)
         personFps = frames.length / gifDuration
         cutout = true
-      } catch {
-        // Model/runtime unavailable  fall back to the raw frames.
+      } catch (err) {
+        // Cutout worker failed/crashed  log why, then fall back to raw frames.
+        console.error('[cutout] background removal failed, using raw frames:', err?.message || err)
         frames = (await readdir(framesDir)).sort().map((f) => join(framesDir, f))
       }
     }
