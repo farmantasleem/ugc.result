@@ -1,6 +1,7 @@
 import { SparkIcon } from './icons.jsx'
 
 const SUGGESTIONS = [
+  'Hey! What can you do?',
   "I'm building CalAI, a calorie-tracking app. Here's the site: calai.app",
   'Make a UGC video for Notion  notion.so',
   'Make a UGC video for  result.dev',

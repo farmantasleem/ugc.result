@@ -43,7 +43,7 @@ export function ChatInput({ onSend, disabled, value, onValueChange }) {
             disabled={disabled}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Describe your product and paste its URL…"
+            placeholder="Say hi, or paste your product URL…"
             className="max-h-40 w-full resize-none bg-transparent text-sm leading-relaxed text-content placeholder:text-muted focus:outline-none disabled:opacity-50"
           />
         </div>

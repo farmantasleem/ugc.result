@@ -1,3 +1,4 @@
+import { chatTurn } from '../services/chat.service.js'
 import { understandProduct } from '../services/product.service.js'
 import { findGif } from '../services/giphy.service.js'
 import { findBackground } from '../services/background.service.js'
@@ -9,6 +10,27 @@ import { assembleVideo } from '../services/assembly.service.js'
 import { uploadEnabled, uploadVideo } from '../services/upload.service.js'
 import { OUTPUT_DIR, VIDEO_ROUTE_PREFIX } from '../config/paths.js'
 import { join } from 'node:path'
+
+const chatSchema = {
+  body: {
+    type: 'object',
+    required: ['messages'],
+    properties: {
+      messages: {
+        type: 'array',
+        minItems: 1,
+        items: {
+          type: 'object',
+          required: ['role', 'content'],
+          properties: {
+            role: { type: 'string', enum: ['user', 'assistant'] },
+            content: { type: 'string' },
+          },
+        },
+      },
+    },
+  },
+}
 
 const bodySchema = {
   body: {
@@ -29,6 +51,13 @@ const bodySchema = {
  * @param {import('fastify').FastifyInstance} app
  */
 export default async function ugcRoutes(app) {
+  // Conversational turn. The model chats until it decides the user wants a
+  // video, then signals a render (action: 'render') so the client kicks off the
+  // pipeline below. Until then it just replies (action: 'chat').
+  app.post('/internal/ugc/chat', { schema: chatSchema }, async (request) => {
+    return chatTurn(request.body.messages)
+  })
+
   // Picks and understands all the assets (no video render).
   app.post('/internal/ugc/draft', { schema: bodySchema }, async (request) => {
     return publicDraft(await buildDraft(request))

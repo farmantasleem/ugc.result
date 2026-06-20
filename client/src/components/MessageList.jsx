@@ -32,6 +32,8 @@ function MessageBody({ msg }) {
   switch (msg.kind) {
     case 'text':
       return <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+    case 'thinking':
+      return <ThinkingDots />
     case 'pipeline':
       return (
         <PipelineStatus
@@ -45,4 +47,19 @@ function MessageBody({ msg }) {
     default:
       return null
   }
+}
+
+/** Animated "assistant is typing" dots, shown while a chat reply is loading. */
+function ThinkingDots() {
+  return (
+    <span className="flex items-center gap-1 py-1" aria-label="Thinking…">
+      {[0, 150, 300].map((delay) => (
+        <span
+          key={delay}
+          className="h-2 w-2 animate-bounce rounded-full bg-muted"
+          style={{ animationDelay: `${delay}ms` }}
+        />
+      ))}
+    </span>
+  )
 }

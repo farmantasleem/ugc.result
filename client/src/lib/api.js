@@ -12,17 +12,32 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
  * @returns {Promise<object>} the render payload (product, gif, line, video, ...)
  */
 export async function renderUgcVideo(query) {
-  const res = await fetch(`${API_URL}/internal/ugc/render`, {
+  return postJson('/internal/ugc/render', { query })
+}
+
+/**
+ * Runs one conversational turn. The backend chats until it decides the user
+ * wants a video, then returns `action: 'render'` with the product URL.
+ *
+ * @param {Array<{ role: 'user' | 'assistant', content: string }>} messages
+ * @returns {Promise<{ reply: string, action: 'chat' | 'render', productUrl: string | null }>}
+ */
+export async function chatTurn(messages) {
+  return postJson('/internal/ugc/chat', { messages })
+}
+
+async function postJson(path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify(body),
   })
 
   if (!res.ok) {
     let message = `Request failed (${res.status})`
     try {
-      const body = await res.json()
-      if (body?.error) message = body.error
+      const errBody = await res.json()
+      if (errBody?.error) message = errBody.error
     } catch {
       /* non-JSON error body  keep the status message */
     }
